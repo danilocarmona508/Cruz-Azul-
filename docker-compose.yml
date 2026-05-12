@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  # Servicio 1: Base de Datos (Backend)
+  db:
+    build: ./database
+    container_name: cruz_azul_db
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=cruz_azul
+    ports:
+      - "3306:5432"
+    networks:
+      - azul-net
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: always
+
+  # Servicio 2: Aplicación Web (Frontend ERP)
+  frontend:
+    build: ./frontend
+    container_name: cruz_azul_frontend
+    ports:
+      - "80:3000"
+    networks:
+      - azul-net
+    depends_on:
+      - db
+    restart: always
+
+networks:
+  azul-net:
+    driver: bridge
+
+volumes:
+  pgdata:
