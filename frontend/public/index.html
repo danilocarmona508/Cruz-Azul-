@@ -127,15 +127,16 @@
     const emptyState = document.getElementById('empty-state');
     const badgeTotal = document.getElementById('badge-total');
 
+    // Carga la lista al abrir la página
     document.addEventListener('DOMContentLoaded', fetchProductos);
 
-    // GET: Obtener productos
+    // FUNCIÓN 1: Obtener productos y actualizar inventario
     async function fetchProductos() {
       try {
         const response = await fetch('/api/productos');
         const productos = await response.json();
         
-        listaProductos.innerHTML = '';
+        listaProductos.innerHTML = ''; // Limpiar lista
         badgeTotal.textContent = `${productos.length} productos`;
         
         if (productos.length === 0) {
@@ -164,13 +165,14 @@
           listaProductos.appendChild(row);
         });
       } catch (error) {
-        console.error('Error:', error);
+        console.error('Error al cargar inventario:', error);
       }
     }
 
-    // POST: Guardar producto
+    // FUNCIÓN 2: Guardar producto nuevo cuando se envía el formulario
     form.addEventListener('submit', async (e) => {
-      e.preventDefault();
+      e.preventDefault(); // Evita que la página se recargue sola
+      
       const nuevoProducto = {
         nombre: document.getElementById('nombre').value,
         precio: parseFloat(document.getElementById('precio').value),
@@ -186,11 +188,15 @@
         });
 
         if (response.ok) {
-          form.reset();
-          fetchProductos();
+          alert("✅ ¡Producto guardado exitosamente en la Base de Datos!");
+          form.reset(); // Limpia los campos del formulario
+          fetchProductos(); // Vuelve a cargar la lista para mostrar el nuevo producto
+        } else {
+          alert("❌ Ocurrió un error al intentar guardar. Revisa la consola.");
         }
       } catch (error) {
         console.error('Error al guardar:', error);
+        alert("❌ Error de conexión con el servidor.");
       }
     });
   </script>
